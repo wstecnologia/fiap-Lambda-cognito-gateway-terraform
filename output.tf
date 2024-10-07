@@ -1,4 +1,4 @@
-##Output Lambda
+##Output Lambda function
 output "layers" {
   value = [{
     wstech = [{
