@@ -39,7 +39,7 @@ resource "aws_cognito_user_pool" "pool" {
   }
 
   # Configuração para login com e-mail como nome de usuário
-  username_attributes = ["email"]
+  # username_attributes = ["email"]
 
   # Configuração de auto-verificação de e-mail
   auto_verified_attributes = ["email"]
@@ -49,11 +49,30 @@ resource "aws_cognito_user_pool" "pool" {
     allow_admin_create_user_only = false
   }
 
-  schema {
+ schema {
+    name     = "cpf"
     attribute_data_type = "String"
-    name                = "cpf"
-    required            = false
-    mutable             = false
+    required = false
+    mutable  = false
+
+    string_attribute_constraints {
+      min_length = 11
+      max_length = 14
+    }
+  }
+
+    schema {
+    name     = "name"
+    attribute_data_type = "String"
+    required = true
+    mutable  = true
+  }
+
+  schema {
+    name     = "email"
+    attribute_data_type = "String"
+    required = true
+    mutable  = true
   }
 
   # Opções de verificação e segurança adicionais
