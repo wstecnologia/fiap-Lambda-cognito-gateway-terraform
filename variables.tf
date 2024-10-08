@@ -8,22 +8,17 @@ variable "runtime" {
   default = "nodejs20.x"
 }
 
-variable "domain_name" {
-  type        = string
-}
-
-variable "name" {
-  type        = string    
-}
-
 variable "user_pool_name" {
-  type = string
+  type    = string
+  default = "wstech_pool"
 }
 
 variable "client_name" {
-  type = string
+  type    = string
+  default = "wstech_client"
 }
 
 variable "user_pool_domain" {
-  type = string
+  type    = string
+  default = "fiap-wstech-techchallenger"
 }
