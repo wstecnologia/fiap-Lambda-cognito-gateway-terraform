@@ -1,7 +1,7 @@
 data "archive_file" "wstech_api_artefact" {
-  type        = "zip"
-  source_dir  = "${local.lambdas_path}/wstech-api" # Diretório contendo o código da função
-  output_path = "${path.module}/files/wstech-api-artefact.zip"
+  output_path = "files/wstech-api-artefact.zip"
+  type        = "zip"  
+  source_file = "${local.lambdas_path}/wstech-api/index.js"
 }
 
 resource "aws_lambda_function" "wstech_api" {
