@@ -1,19 +1,19 @@
 resource "aws_cognito_user_pool_client" "client" {
-  name                = var.client_name
-  generate_secret     = true
-  user_pool_id        = aws_cognito_user_pool.pool.id  
+  name                         = var.client_name
+  generate_secret              = true
+  user_pool_id                 = aws_cognito_user_pool.pool.id
   supported_identity_providers = ["COGNITO"]
-  callback_urls       = ["https://github.com/Kong/insomnia"] # Adicione suas URLs de callback aqui
+  callback_urls                = ["https://github.com/Kong/insomnia"] # Adicione suas URLs de callback aqui
   ##logout_urls         = ["https://sua-url-logout.com/logout"] # Adicione suas URLs de logout aqui
 
-  allowed_oauth_flows = ["code"] # Ou "implicit", dependendo da sua necessidade
-  allowed_oauth_scopes = ["email", "openid"] # Adicione os escopos que você precisa
+  allowed_oauth_flows                  = ["code"]            # Ou "implicit", dependendo da sua necessidade
+  allowed_oauth_scopes                 = ["email", "openid"] # Adicione os escopos que você precisa
   allowed_oauth_flows_user_pool_client = true
   explicit_auth_flows = [
-    "ALLOW_USER_SRP_AUTH", 
-    "ALLOW_USER_PASSWORD_AUTH", 
+    "ALLOW_USER_SRP_AUTH",
+    "ALLOW_USER_PASSWORD_AUTH",
     "ALLOW_REFRESH_TOKEN_AUTH"
-    ]
+  ]
 
   token_validity_units {
     access_token  = "minutes"
@@ -56,7 +56,7 @@ resource "aws_cognito_user_pool" "pool" {
     mutable             = false
   }
 
-    # Opções de verificação e segurança adicionais
+  # Opções de verificação e segurança adicionais
   account_recovery_setting {
     recovery_mechanism {
       name     = "verified_email"
@@ -74,7 +74,7 @@ resource "aws_cognito_user_group" "main" {
 }
 
 resource "aws_cognito_user_pool_domain" "user_pool_domain" {
-  domain = var.user_pool_domain
+  domain       = var.user_pool_domain
   user_pool_id = aws_cognito_user_pool.pool.id
 }
 
