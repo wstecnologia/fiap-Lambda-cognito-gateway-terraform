@@ -3,11 +3,11 @@ resource "aws_cognito_user_pool_client" "client" {
   generate_secret              = true
   user_pool_id                 = aws_cognito_user_pool.pool.id
   supported_identity_providers = ["COGNITO"]
-  callback_urls                = ["https://github.com/Kong/insomnia"] # Adicione suas URLs de callback aqui
-  ##logout_urls         = ["https://sua-url-logout.com/logout"] # Adicione suas URLs de logout aqui
+  callback_urls                = var.callback_urls
+  
 
-  allowed_oauth_flows                  = ["code"]            # Ou "implicit", dependendo da sua necessidade
-  allowed_oauth_scopes                 = ["email", "openid"] # Adicione os escopos que você precisa
+  allowed_oauth_flows                  = ["code"]           
+  allowed_oauth_scopes                 = ["email", "openid"] 
   allowed_oauth_flows_user_pool_client = true
   explicit_auth_flows = [
     "ALLOW_USER_SRP_AUTH",
@@ -38,13 +38,8 @@ resource "aws_cognito_user_pool" "pool" {
     require_symbols   = false
   }
 
-  # Configuração para login com e-mail como nome de usuário
-  # username_attributes = ["email"]
-
-  # Configuração de auto-verificação de e-mail
   auto_verified_attributes = ["email"]
 
-  # Configurando as políticas de recuperação de senha
   admin_create_user_config {
     allow_admin_create_user_only = false
   }
@@ -75,7 +70,6 @@ resource "aws_cognito_user_pool" "pool" {
     mutable  = true
   }
 
-  # Opções de verificação e segurança adicionais
   account_recovery_setting {
     recovery_mechanism {
       name     = "verified_email"

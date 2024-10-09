@@ -22,3 +22,8 @@ variable "user_pool_domain" {
   type    = string
   default = "fiap-wstech-techchallenger"
 }
+
+variable "callback_urls" {
+  type = list(string)
+  default = [ "https://github.com/Kong/insomnia" ]
+}

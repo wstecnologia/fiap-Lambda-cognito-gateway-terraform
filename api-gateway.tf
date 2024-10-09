@@ -15,8 +15,8 @@ resource "aws_apigatewayv2_route" "get_user_route" {
   api_id             = aws_apigatewayv2_api.wstech-api-gateway.id
   route_key          = "GET /user"
   target             = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
-  authorization_type = "JWT"
-  authorizer_id      = aws_apigatewayv2_authorizer.jwt_authorizer.id
+  #authorization_type = "JWT"
+  #authorizer_id      = aws_apigatewayv2_authorizer.jwt_authorizer.id
 }
 
 resource "aws_apigatewayv2_stage" "default_stage" {
@@ -33,15 +33,15 @@ resource "aws_lambda_permission" "apigw_lambda" {
   source_arn    = "${aws_apigatewayv2_api.wstech-api-gateway.execution_arn}/*/GET/user"
 }
 
-resource "aws_apigatewayv2_authorizer" "jwt_authorizer" {
-  name             = "JWTAuthorizer"
-  api_id           = aws_apigatewayv2_api.wstech-api-gateway.id
-  authorizer_type  = "JWT"
-  identity_sources = ["$request.header.Authorization"]
+# resource "aws_apigatewayv2_authorizer" "jwt_authorizer" {
+#   name             = "JWTAuthorizer"
+#   api_id           = aws_apigatewayv2_api.wstech-api-gateway.id
+#   authorizer_type  = "JWT"
+#   identity_sources = ["$request.header.Authorization"]
 
-  jwt_configuration {
-    issuer   = "https://cognito-idp.${var.aws_region}.amazonaws.com/${aws_cognito_user_pool.pool.id}"
-    audience = [aws_cognito_user_pool_client.client.id]
+#   jwt_configuration {
+#     issuer   = "https://cognito-idp.${var.aws_region}.amazonaws.com/${aws_cognito_user_pool.pool.id}"
+#     audience = [aws_cognito_user_pool_client.client.id]
 
-  }
-}
+#   }
+# }
