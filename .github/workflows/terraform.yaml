@@ -1,4 +1,4 @@
-name: Terraform AWS Pipeline
+name: Deploy Infra com Terraform
 
 on:
   pull_request:
@@ -6,9 +6,8 @@ on:
       - main
 
 jobs:
-  terraform:
+  deploy:
     runs-on: ubuntu-latest
-
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -16,22 +15,29 @@ jobs:
       AWS_REGION: us-east-1
 
     steps:
-      - name: Checkout repository
+      - name: Checkout do código
         uses: actions/checkout@v2
 
-      - name: Setup Terraform
+      - name: Configurar Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.9.6
 
-      - name: Terraform Init
+      - name: Inicializar Terraform
         run: terraform init
 
-      - name: Terraform Validate
+      - name: Validar Terraform
         run: terraform validate
 
-      - name: Terraform Plan
-        run: terraform plan
+      - name: Executar Terraform Plan
+        id: plan
+        run: |
+          terraform plan \
+          -var "db_name=${{ secrets.DB_DATABASE }}" \
+          -var "db_password=${{ secrets.DB_PASSWORD }}" \
+          -var "db_username=${{ secrets.DB_USER }}" \
+          -out=tfplan
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      - name: Aplicar Terraform
+        run: |
+          terraform apply -auto-approve tfplan
