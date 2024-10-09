@@ -29,3 +29,8 @@ output "user_pool_id" {
 output "user_pool_client_id" {
   value = aws_cognito_user_pool_client.client.id
 }
+
+output "api_endpoint" {
+  description = "Endpoint da API Gateway"
+  value       = aws_apigatewayv2_api.wstech-api-gateway.api_endpoint
+}
