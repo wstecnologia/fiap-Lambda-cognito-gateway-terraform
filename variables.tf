@@ -1,4 +1,5 @@
 variable "aws_region" {
+  description = "Região default"
   type    = string
   default = "us-east-1"
 }
