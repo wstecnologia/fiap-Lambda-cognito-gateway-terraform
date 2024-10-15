@@ -24,6 +24,51 @@ jobs:
         with:
           terraform_version: 1.9.6
 
+      - name: Install AWS CLI (if not already installed)
+        run: |
+          if ! command -v aws &> /dev/null
+          then
+              echo "AWS CLI não encontrado, instalando..."
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              sudo ./aws/install
+          else
+              echo "AWS CLI já está instalado."
+          fi
+
+      - name: Configure AWS CLI
+        run: aws configure set region $AWS_REGION
+
+      - name: Check and Import Existing Cognito User Pool Domain
+        run: |
+          DOMAIN_NAME="fiap-wstech-techchallenger"
+
+          # Tentar descrever o domínio do Cognito
+          if aws cognito-idp describe-user-pool-domain --domain "$DOMAIN_NAME" >/dev/null 2>&1; then
+            echo "O domínio Cognito '$DOMAIN_NAME' já existe. Importando para o estado do Terraform..."
+            
+            # Obter o User Pool ID associado ao domínio
+            USER_POOL_ID=$(aws cognito-idp describe-user-pool-domain --domain "$DOMAIN_NAME" --query "Domain.UserPoolId" --output text)
+            
+            # Importar o domínio para o estado do Terraform
+            terraform import aws_cognito_user_pool_domain.user_pool_domain "${USER_POOL_ID}/${DOMAIN_NAME}"
+          else
+            echo "O domínio Cognito '$DOMAIN_NAME' não existe. Procedendo com a criação."
+          fi
+
+      - name: Check and Import Existing Lambda Function
+        run: |
+          FUNCTION_NAME="AuthClienteByCpf"
+
+          # Tentar obter detalhes da função Lambda
+          if aws lambda get-function --function-name "$FUNCTION_NAME" >/dev/null 2>&1; then
+            echo "A função Lambda '$FUNCTION_NAME' já existe. Importando para o estado do Terraform..."
+            
+            # Importar a função Lambda para o estado do Terraform
+            terraform import aws_lambda_function.wstech_api "$FUNCTION_NAME"
+          else
+            echo "A função Lambda '$FUNCTION_NAME' não existe. Procedendo com a criação."
+          fi
       - name: Terraform Init
         run: terraform init
 
